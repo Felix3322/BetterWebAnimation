@@ -40,6 +40,11 @@ To use this script, you need a userscript manager such as [Tampermonkey](https:/
 - **Position & Size Transition**: Smooth transitions for position or size changes.
 - **Change Detection**: Detects and manages frequent changes in content to prevent performance issues.
 
+### License
+This script is licensed under the [Creative Commons BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).
+
+[![Creative Commons License](http://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 ---
 
 ## Better Web Animation 网页动画优化
@@ -82,3 +87,8 @@ To use this script, you need a userscript manager such as [Tampermonkey](https:/
 - **过渡持续时间**：设置属性过渡的持续时间（如颜色、透明度）。
 - **位置和尺寸过渡**：位置或尺寸变化的平滑过渡效果。
 - **变化检测**：检测并管理频繁变化的内容，防止频繁变化影响页面性能。
+
+### 协议
+在本项目中使用了 [知识共享署名-非商业性使用 4.0 国际许可协议 (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)，可以点击下方按钮查看详细信息：
+
+[![CC BY-NC 4.0](http://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
