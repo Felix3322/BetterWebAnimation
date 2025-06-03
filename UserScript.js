@@ -107,6 +107,9 @@
     const userLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
     const t = translations[userLang];
 
+    // 仅在这些选择器匹配的元素上应用动画，减少全页面扫描
+    const TARGET_SELECTORS = 'img, video, p, div, li, section, article, main, aside, header, footer';
+
     // 默认配置，确保所有配置项都有默认值
     const defaultConfig = {
         fadeInDuration: 0.5, // 渐显持续时间（秒）
@@ -119,8 +122,8 @@
         observeAttributes: true, // 观察属性变化
         observeCharacterData: true, // 观察文本变化
         enableInitialFadeIn: true, // 启用加载时的渐入效果
-        complexityThreshold: 50000, // 复杂度阈值（元素数量）
-        mutationThreshold: 1000, // 突变阈值（突变/秒）
+        complexityThreshold: 5000, // 复杂度阈值（元素数量）
+        mutationThreshold: 100, // 突变阈值（突变/秒）
         enableComplexityDetection: true, // 启用复杂度检测
         enableMutationDetection: true, // 启用突变率检测
         animationPreset: 'default', // 动画预设
@@ -621,8 +624,8 @@
 
     // 应用动画到现有的所有元素
     function applyAnimationsToExistingElements() {
-        // 遍历所有元素，应用进入动画
-        document.querySelectorAll('*').forEach(element => {
+        // 只遍历常见的元素，避免对整个页面的所有节点进行扫描
+        document.querySelectorAll(TARGET_SELECTORS).forEach(element => {
             applyEnterAnimations(element);
 
             // 对所有图片应用图片渐入效果
@@ -671,35 +674,43 @@
                     // 在节点被添加时应用进入动画
                     mutation.addedNodes.forEach(node => {
                         if (node.nodeType === Node.ELEMENT_NODE) {
-                            applyEnterAnimations(node);
-
-                            // 对新添加的图片应用图片渐入效果
-                            if (node.tagName.toLowerCase() === 'img') {
-                                applyImageFadeIn(node);
-                            } else {
-                                // 对子元素中的图片应用图片渐入效果
-                                node.querySelectorAll('img').forEach(img => {
-                                    applyImageFadeIn(img);
-                                });
+                            if (node.matches(TARGET_SELECTORS)) {
+                                applyEnterAnimations(node);
+                                if (node.tagName.toLowerCase() === 'img') {
+                                    applyImageFadeIn(node);
+                                }
                             }
+                            node.querySelectorAll(TARGET_SELECTORS).forEach(el => {
+                                applyEnterAnimations(el);
+                                if (el.tagName.toLowerCase() === 'img') {
+                                    applyImageFadeIn(el);
+                                }
+                            });
                         }
                     });
 
                     // 在节点被移除前应用离开动画
                     mutation.removedNodes.forEach(node => {
                         if (node.nodeType === Node.ELEMENT_NODE) {
-                            applyExitAnimations(node);
+                            if (node.matches(TARGET_SELECTORS)) {
+                                applyExitAnimations(node);
+                            }
+                            node.querySelectorAll(TARGET_SELECTORS).forEach(el => {
+                                applyExitAnimations(el);
+                            });
                         }
                     });
 
                     // 添加父节点到变化集合
                     if (mutation.target && mutation.target.nodeType === Node.ELEMENT_NODE) {
-                        changedElements.add(mutation.target);
+                        if (mutation.target.matches(TARGET_SELECTORS)) {
+                            changedElements.add(mutation.target);
+                        }
                     }
                 } else if ((mutation.type === 'attributes' && userConfig.observeAttributes) ||
                            (mutation.type === 'characterData' && userConfig.observeCharacterData)) {
                     const target = mutation.target;
-                    if (target.nodeType === Node.ELEMENT_NODE) {
+                    if (target.nodeType === Node.ELEMENT_NODE && target.matches(TARGET_SELECTORS)) {
                         applyTransitionEffect(target);
                         changedElements.add(target);
 
